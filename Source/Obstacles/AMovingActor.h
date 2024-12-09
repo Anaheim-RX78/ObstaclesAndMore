@@ -36,7 +36,7 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	FVector InitialPosition;
 
-	virtual void MoveActor();
+	virtual void MoveActor(float movAlpha);
 
 	virtual void GetTargetLocation();
 

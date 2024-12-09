@@ -27,13 +27,12 @@ AAMovingActor::AAMovingActor()
 	
 }
 
-#pragma endregion
+#pragma endregion CONSTRUCT
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma region MOVEMESH_FUNCTION
 
-void AAMovingActor::MoveActor()
+void AAMovingActor::MoveActor(float movAlpha)
 {
-	float movAlpha = (FMath::Sin((GetWorld()->TimeSeconds * speed) * PI * 2) + 1) * 0.5f;
 
 	Mesh->SetWorldLocation(FMath::Lerp(TargetPosition, InitialPosition, movAlpha));
 	
@@ -47,7 +46,7 @@ void AAMovingActor::GetTargetLocation()
 	
 }
 
-#pragma endregion	
+#pragma endregion MOVEMESH_FUNCTION
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma region BEGINPLAY_FUNCTION
 
