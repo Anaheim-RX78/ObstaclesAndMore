@@ -11,38 +11,75 @@ AAMovingActor::AAMovingActor()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	ActorRoot = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	if (ActorRoot) RootComponent = ActorRoot;
+	ActorRoot = CreateDefaultSubobject<USceneComponent>("Root");
+	SetRootComponent(ActorRoot);
 
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	if (Mesh) Mesh->SetupAttachment(RootComponent);
-
-	TargetPoint = CreateDefaultSubobject<UBillboardComponent>(TEXT("TargetPoint"));
-	if (TargetPoint)
-	{
-		TargetPoint->SetupAttachment(RootComponent);
-		static ConstructorHelpers::FObjectFinder<UTexture2D> BillboardSprite(TEXT("/Engine/EditorResources/S_TargetPoint.S_TargetPoint"));
-		TargetPoint->Sprite = BillboardSprite.Object;
-	}
+	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Mesh");
+	Mesh->SetupAttachment(RootComponent);
 	
+}
+
+
+void AAMovingActor::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+
+	for (UBillboardComponent* Target : Targets)
+	{
+		Target->DestroyComponent();
+		Target = nullptr;
+	}
+	Targets.Empty(); 
+	
+	for (int i = 0; i < MovPoints; i++)
+	{
+		FString TargetName = FString::Printf(TEXT("Target%d"), i);
+		UBillboardComponent* Target = NewObject<UBillboardComponent>(this, UBillboardComponent::StaticClass());
+		Target->SetupAttachment(RootComponent);
+		//static ConstructorHelpers::FObjectFinder<UTexture2D> BillboardSprite(TEXT("/Engine/EditorResources/S_TargetPoint.S_TargetPoint"));
+		//Target->Sprite = BillboardSprite.Object;
+		Target->RegisterComponent();
+		
+		Targets.Add(Target);
+	}
 }
 
 #pragma endregion CONSTRUCT
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma region MOVEMESH_FUNCTION
 
-void AAMovingActor::MoveActor(float movAlpha)
+void AAMovingActor::MoveActor()
 {
-
-	Mesh->SetWorldLocation(FMath::Lerp(TargetPosition, InitialPosition, movAlpha));
 	
+	if (movAlpha >= 1)
+	{
+		movAlpha = 0;
+		if (CurrentTargetIndex >= Targets.Num() - 1 && InvertMovement == false)
+		{
+			InvertMovement = true;
+		}
+		else if (CurrentTargetIndex <= 0 && InvertMovement == true)
+		{
+			InvertMovement = false;
+		}
+
+		if (!InvertMovement)
+		{ CurrentTargetIndex++;
+		} else {CurrentTargetIndex --;}
+		
+		GetTargetLocation(CurrentTargetIndex);
+	}
+
+	movAlpha = movAlpha + 0.01 * speed;
+	Mesh->SetWorldLocation(FMath::Lerp(InitialPosition, TargetPosition, movAlpha));
+
 }
 
-void AAMovingActor::GetTargetLocation()
+void AAMovingActor::GetTargetLocation(int index)
 {
 
-	InitialPosition = GetActorLocation();
-	TargetPosition = TargetPoint->GetComponentLocation();
+	InitialPosition = Mesh->GetComponentLocation();
+	TargetPosition = Targets[index]->GetComponentLocation();
 	
 }
 
@@ -55,6 +92,8 @@ void AAMovingActor::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	GetTargetLocation(CurrentTargetIndex);
+	
 }
 
 #pragma endregion BEGINPLAY_FUNCTION
@@ -65,6 +104,8 @@ void AAMovingActor::BeginPlay()
 void AAMovingActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	MoveActor();
 
 }
 
