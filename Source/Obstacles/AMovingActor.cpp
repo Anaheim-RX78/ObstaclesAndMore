@@ -24,66 +24,72 @@ void AAMovingActor::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 
-	for (UBillboardComponent* Target : Targets)
+	if (PrevMovPoints != MovPoints && UpdateTargetChanges)
 	{
-		Target->DestroyComponent();
-		Target = nullptr;
-	}
-	Targets.Empty(); 
+		PrevMovPoints = MovPoints;
+		for (UBillboardComponent* Target : Targets)
+		{
+			Target->DestroyComponent();
+			Target = nullptr;
+		}
+		Targets.Empty(); 
 	
-	for (int i = 0; i < MovPoints; i++)
-	{
-		FString TargetName = FString::Printf(TEXT("Target%d"), i);
-		UBillboardComponent* Target = NewObject<UBillboardComponent>(this, UBillboardComponent::StaticClass());
-		Target->SetupAttachment(RootComponent);
-		//static ConstructorHelpers::FObjectFinder<UTexture2D> BillboardSprite(TEXT("/Engine/EditorResources/S_TargetPoint.S_TargetPoint"));
-		//Target->Sprite = BillboardSprite.Object;
-		Target->RegisterComponent();
+		for (int i = 0; i < MovPoints; i++)
+		{
+			FString TargetName = FString::Printf(TEXT("Target%d"), i);
+			UBillboardComponent* Target = NewObject<UBillboardComponent>(this, UBillboardComponent::StaticClass());
+			Target->SetupAttachment(RootComponent);
+			//static ConstructorHelpers::FObjectFinder<UTexture2D> BillboardSprite(TEXT("/Engine/EditorResources/S_TargetPoint.S_TargetPoint"));
+			//Target->Sprite = BillboardSprite.Object;
+			Target->RegisterComponent();
 		
-		Targets.Add(Target);
+			Targets.Add(Target);
+		}
 	}
 }
 
-#pragma endregion CONSTRUCT
+#pragma endregion 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma region MOVEMESH_FUNCTION
 
 void AAMovingActor::MoveActor()
 {
-	
-	if (movAlpha >= 1)
+	if (Targets.Num() > 0)
 	{
-		movAlpha = 0;
-		if (CurrentTargetIndex >= Targets.Num() - 1 && InvertMovement == false)
+		if (movAlpha >= 1)
 		{
-			InvertMovement = true;
-		}
-		else if (CurrentTargetIndex <= 0 && InvertMovement == true)
-		{
-			InvertMovement = false;
-		}
+			movAlpha = 0;
+			if (CurrentTargetIndex >= Targets.Num() - 1 && InvertMovement == false)
+			{
+				InvertMovement = true;
+			}
+			else if (CurrentTargetIndex <= 0 && InvertMovement == true)
+			{
+				InvertMovement = false;
+			}
 
-		if (!InvertMovement)
-		{ CurrentTargetIndex++;
-		} else {CurrentTargetIndex --;}
+			if (!InvertMovement)
+			{ CurrentTargetIndex++;
+			} else {CurrentTargetIndex --;}
 		
-		GetTargetLocation(CurrentTargetIndex);
+			GetTargetLocation(CurrentTargetIndex);
+		}
+
+		movAlpha = movAlpha + 0.01 * speed;
+		Mesh->SetWorldLocation(FMath::Lerp(InitialPosition, TargetPosition, movAlpha));
 	}
-
-	movAlpha = movAlpha + 0.01 * speed;
-	Mesh->SetWorldLocation(FMath::Lerp(InitialPosition, TargetPosition, movAlpha));
-
 }
 
 void AAMovingActor::GetTargetLocation(int index)
 {
-
-	InitialPosition = Mesh->GetComponentLocation();
-	TargetPosition = Targets[index]->GetComponentLocation();
-	
+	if (Targets.Num() > 0)
+	{
+		InitialPosition = Mesh->GetComponentLocation();
+		TargetPosition = Targets[index]->GetComponentLocation();
+	}
 }
 
-#pragma endregion MOVEMESH_FUNCTION
+#pragma endregion 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma region BEGINPLAY_FUNCTION
 
@@ -96,7 +102,7 @@ void AAMovingActor::BeginPlay()
 	
 }
 
-#pragma endregion BEGINPLAY_FUNCTION
+#pragma endregion
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma region TICK_FUNCTION
 
@@ -104,9 +110,6 @@ void AAMovingActor::BeginPlay()
 void AAMovingActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	MoveActor();
-
 }
 
-#pragma endregion TICK_FUNCTION
+#pragma endregion

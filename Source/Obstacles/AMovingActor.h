@@ -18,11 +18,16 @@ public:
 
 protected:
 
+	UPROPERTY(EditAnywhere, category = "Settings")
+	bool UpdateTargetChanges;
+
 	UPROPERTY(EditAnywhere, Category = "Settings")
 	float speed = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
 	int MovPoints = 2;
+
+	int PrevMovPoints = 0;
 
 	UPROPERTY()
 	float movAlpha;

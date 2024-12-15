@@ -7,7 +7,10 @@
 		{
 			"Name": "ObstaclesAndMore",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Obstacles"
+			]
 		},
 		{
 			"Name": "Obstacles",
