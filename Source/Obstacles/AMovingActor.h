@@ -27,6 +27,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
 	int MovPoints = 2;
 
+	UPROPERTY()
 	int PrevMovPoints = 0;
 
 	UPROPERTY()
@@ -39,7 +40,7 @@ protected:
 	bool InvertMovement;
 
 	
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
     TArray<UBillboardComponent*> Targets;
 	
 	UPROPERTY(EditAnywhere)
@@ -53,17 +54,17 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	FVector InitialPosition;
-	
-	//
-	virtual void MoveActor(float DTime);
 
-	//
+	
+	UFUNCTION()
+	virtual void MoveActor(float DTime);
+	
+	UFUNCTION()
 	virtual void GetTargetLocation(int index);
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	//
+	
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 public:	

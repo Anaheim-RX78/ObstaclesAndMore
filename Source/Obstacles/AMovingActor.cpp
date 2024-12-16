@@ -14,7 +14,7 @@ AAMovingActor::AAMovingActor()
 	ActorRoot = CreateDefaultSubobject<USceneComponent>("Root");
 	SetRootComponent(ActorRoot);
 
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Mesh");
+	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("MovingMesh");
 	Mesh->SetupAttachment(RootComponent);
 	
 }
@@ -36,8 +36,9 @@ void AAMovingActor::OnConstruction(const FTransform& Transform)
 	
 		for (int i = 0; i < MovPoints; i++)
 		{
-			FString TargetName = FString::Printf(TEXT("Target%d"), i);
+			FString TargetName = FString::Printf(TEXT("Target_%d"), i);
 			UBillboardComponent* Target = NewObject<UBillboardComponent>(this, UBillboardComponent::StaticClass());
+			Target->Rename(*TargetName);
 			Target->SetupAttachment(RootComponent);
 			//static ConstructorHelpers::FObjectFinder<UTexture2D> BillboardSprite(TEXT("/Engine/EditorResources/S_TargetPoint.S_TargetPoint"));
 			//Target->Sprite = BillboardSprite.Object;
