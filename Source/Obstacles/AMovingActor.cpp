@@ -52,7 +52,7 @@ void AAMovingActor::OnConstruction(const FTransform& Transform)
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma region MOVEMESH_FUNCTION
 
-void AAMovingActor::MoveActor()
+void AAMovingActor::MoveActor(float DTime)
 {
 	if (Targets.Num() > 0)
 	{
@@ -75,7 +75,7 @@ void AAMovingActor::MoveActor()
 			GetTargetLocation(CurrentTargetIndex);
 		}
 
-		movAlpha = movAlpha + 0.01 * speed;
+		movAlpha = movAlpha + DTime * speed;
 		Mesh->SetWorldLocation(FMath::Lerp(InitialPosition, TargetPosition, movAlpha));
 	}
 }

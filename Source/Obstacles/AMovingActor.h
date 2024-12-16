@@ -55,7 +55,7 @@ protected:
 	FVector InitialPosition;
 	
 	//
-	virtual void MoveActor();
+	virtual void MoveActor(float DTime);
 
 	//
 	virtual void GetTargetLocation(int index);

@@ -68,7 +68,7 @@ void AADoor::Tick(float DeltaTime)
 			movAlpha = 1;
 		}
 		
-		MoveActor();	
+		MoveActor(DeltaTime);	
 		
 	}
 

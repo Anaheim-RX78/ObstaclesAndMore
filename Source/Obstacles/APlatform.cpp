@@ -49,7 +49,7 @@ void AAPlatform::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	MoveActor();
+	MoveActor(DeltaTime);
 	
 }
 
