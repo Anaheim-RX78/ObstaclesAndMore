@@ -14,8 +14,8 @@ AAMovingActor::AAMovingActor()
 	ActorRoot = CreateDefaultSubobject<USceneComponent>("Root");
 	SetRootComponent(ActorRoot);
 
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("MovingMesh");
-	Mesh->SetupAttachment(RootComponent);
+	MovMesh = CreateDefaultSubobject<UStaticMeshComponent>("MovingMesh");
+	MovMesh->SetupAttachment(RootComponent);
 	
 }
 
@@ -77,7 +77,7 @@ void AAMovingActor::MoveActor(float DTime)
 		}
 
 		movAlpha = movAlpha + DTime * speed;
-		Mesh->SetWorldLocation(FMath::Lerp(InitialPosition, TargetPosition, movAlpha));
+		MovMesh->SetWorldLocation(FMath::Lerp(InitialPosition, TargetPosition, movAlpha));
 	}
 }
 
@@ -85,7 +85,7 @@ void AAMovingActor::GetTargetLocation(int index)
 {
 	if (Targets.Num() > 0)
 	{
-		InitialPosition = Mesh->GetComponentLocation();
+		InitialPosition = MovMesh->GetComponentLocation();
 		TargetPosition = Targets[index]->GetComponentLocation();
 	}
 }

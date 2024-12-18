@@ -10,8 +10,8 @@ AADoor::AADoor()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeMeshAsset(TEXT("/Engine/BasicShapes/Cube.Cube"));
 	if (CubeMeshAsset.Succeeded())
 	{
-		Mesh->SetStaticMesh(CubeMeshAsset.Object);
-		Mesh->SetRelativeScale3D(FVector(1.5f, 0.25f, 3.f));
+		MovMesh->SetStaticMesh(CubeMeshAsset.Object);
+		MovMesh->SetRelativeScale3D(FVector(1.5f, 0.25f, 3.f));
 	}
 }
 

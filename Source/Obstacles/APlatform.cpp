@@ -10,8 +10,8 @@ AAPlatform::AAPlatform()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeMeshAsset(TEXT("/Engine/BasicShapes/Cube.Cube"));
 	if (CubeMeshAsset.Succeeded())
 	{
-		Mesh->SetStaticMesh(CubeMeshAsset.Object);
-		Mesh->SetRelativeScale3D(FVector(1.f, 1.f, 0.2f));
+		MovMesh->SetStaticMesh(CubeMeshAsset.Object);
+		MovMesh->SetRelativeScale3D(FVector(1.f, 1.f, 0.2f));
 	}
 }
 

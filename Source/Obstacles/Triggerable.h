@@ -4,19 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/BoxComponent.h"
 #include "Triggerable.generated.h"
-
-USTRUCT(Blueprintable)
-struct FMyStruct
-{
-	GENERATED_BODY()
-public:
-
-	UPROPERTY()
-	AActor* SInteractor;
-	UPROPERTY()
-	bool SIsColliding;
-};
 
 UCLASS()
 class OBSTACLES_API ATriggerable : public AActor
@@ -28,17 +17,37 @@ public:
 	ATriggerable();
 
 protected:
+
+	UPROPERTY()
+	USceneComponent* ActorRoot;
 	
 	UPROPERTY(EditAnywhere)
 	UBoxComponent* TriggerBox;
 
-	UFUNCTION(BlueprintCallable)
-	FMyStruct OnTrigger(AActor* Interactor, bool isColliding);
+	UPROPERTY(VisibleAnywhere)
+	TArray<AActor*> Interactors;
 
+
+	UFUNCTION()
+	virtual void OnTriggered(AActor* CurrentActor, bool isColliding);
+	
+	UFUNCTION()
+	void OnTriggerActor(AActor* OtherActor, bool isColliding);
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
+
+	UFUNCTION()
+	void OnTriggerStart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	  const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnTriggerEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

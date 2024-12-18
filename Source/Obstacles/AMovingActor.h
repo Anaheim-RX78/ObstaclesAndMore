@@ -44,7 +44,7 @@ protected:
     TArray<UBillboardComponent*> Targets;
 	
 	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* Mesh;
+	UStaticMeshComponent* MovMesh;
 
 	UPROPERTY(BlueprintReadOnly)
 	USceneComponent* ActorRoot;
