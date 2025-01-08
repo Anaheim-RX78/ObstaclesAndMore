@@ -17,11 +17,7 @@ class OBSTACLES_API ADamageTrigger : public ATriggerable
 
 protected:
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Stats")
 	float Damage;
-
-	virtual void InfertDamage(AActor* OtherActor);
-
-	virtual void OnTriggered(AActor* OtherActor, bool IsColliding) override;
 	
 };
